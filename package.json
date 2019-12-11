@@ -1,7 +1,21 @@
 {
+  "author": "Cédric Rey",
+  "name": "ac-sync",
+  "version": "2.0.0",
+  "description": "Adobe Campaign Classic Synchronisation : tools to synchronise Adobe Campaign Classic objects to local files. NeoSync v2.0",
+  "main": "ac-sync.js",
+  "keywords": [
+    "Adobe Campaign",
+    "Neolane"
+  ],
+  "directories": {
+    "utils": "./utils/*",
+    "conf": "./conf"
+  },
   "engines": {
     "node": ">=10.0"
   },
+  "license": "MIT",
   "dependencies": {
     "ac-connector": "latest",
     "chokidar": "3.3.0",
@@ -9,8 +23,8 @@
     "keypress": "latest",
     "dateformat": "latest"
   },
-  "main": "ac-sync.js",
-  "bin": {
-    "ACSync": "./ACSyncInterface.js"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cedricrey/ac-sync.git"
   }
 }
