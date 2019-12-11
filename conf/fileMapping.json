@@ -1,0 +1,113 @@
+[
+  
+  {
+    "name" : "srcSchema",
+    "label" : "Schema source",
+    "fileExtension" : "xml",
+    "schema" : "xtk:srcSchema",
+    "primaryKey" : "@namespace + ':' + @name",
+    "specificKey" : null,
+    "querySelector" : "<node expr='data'/><node expr='@xtkschema'/>",
+    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "responseStructure" : "<srcSchema[\\s\\S]*<\/srcSchema>"
+  },
+  {
+    "name" : "delivery",
+    "label" : "Delivery",
+    "fileExtension" : "xml",
+    "schema" : "nms:delivery",
+    "primaryKey" : "@internalName",
+    "specificKey" : null,
+    "querySelector" : "<node expr='data'/><node expr='@internalName'/><node expr='@isModel'/><node expr='@deliveryMode'/><node expr='@label'/><node expr='[folder/@name]'/><node expr='[folderProcess/@name]'/><node expr='[mapping/@name]'/><node expr='[typology/@name]'/><node expr='[deliveryProvider/@name]'/><node expr='@xtkschema'/>",
+    "queryCondition" : "<condition expr=\"@internalName = '${primaryKey}'\"/>",
+    "responseStructure" : "<delivery[\\s\\S]*<\/delivery>"
+  },
+  {
+    "name" : "deliveryHTML",
+    "label" : "Delivery HTML Source",
+    "fileExtension" : "html",
+    "schema" : "nms:delivery",
+    "primaryKey" : "@internalName",
+    "specificKey" : "html",
+    "xmlStructure" : "<delivery xtkschema='nms:delivery' internalName='${internalName}' _operation='update'><content><html><source><![CDATA[${content}]]></source></html></content></delivery>",
+    "querySelector" : "<node expr='[content/html/source]'/>",
+    "queryCondition" : "<condition expr=\"@internalName = '${primaryKey}'\"/>",
+    "responseStructure" : "delivery.content.html.source"
+  },
+  {
+    "name" : "deliveryText",
+    "label" : "Delivery Text Source",
+    "fileExtension" : "txt",
+    "schema" : "nms:delivery",
+    "primaryKey" : "@internalName",
+    "specificKey" : "txt",
+    "xmlStructure" : "<delivery xtkschema='nms:delivery' internalName='${internalName}' _operation='update'><content><text><source><![CDATA[${content}]]></source></text></content></delivery>",
+    "querySelector" : "<node expr='[content/text/source]'/>",
+    "queryCondition" : "<condition expr=\"@internalName = '${primaryKey}'\"/>",
+    "responseStructure" : "delivery.content.text.source"
+  },
+  {
+    "name" : "deliverySMS",
+    "label" : "Delivery SMS Source",
+    "fileExtension" : "sms.txt",
+    "schema" : "nms:delivery",
+    "primaryKey" : "@internalName",
+    "specificKey" : "sms",
+    "xmlStructure" : "<delivery xtkschema='nms:delivery' internalName='${internalName}' _operation='update'><content><sms><source><![CDATA[${content}]]></source></sms></content></delivery>",
+    "querySelector" : "<node expr='[content/sms/source]'/>",
+    "queryCondition" : "<condition expr=\"@internalName = '${primaryKey}'\"/>",
+    "responseStructure" : "delivery.content.sms.source"
+  },
+  {
+    "name" : "javascript",
+    "label" : "Javascript Code",
+    "fileExtension" : "js",
+    "schema" : "xtk:javascript",
+    "primaryKey" : "@namespace + ':' + @name",
+    "specificKey" : null,
+    "xmlStructure" : "<javascript xtkschema='xtk:javascript' name='${xmlName}.js' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></javascript>",
+    "querySelector" : "<node expr=\"data\"/>",
+    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "responseStructure" : "javascript.data"
+  },
+  {
+    "name" : "jst",
+    "label" : "Javascript Template",
+    "fileExtension" : "jst",
+    "schema" : "xtk:jst",
+    "primaryKey" : "@namespace + ':' + @name",
+    "specificKey" : null,
+    "xmlStructure" : "<jst xtkschema='xtk:jst' name='${xmlName}' namespace='${nameSpace}'><code><![CDATA[${content}]]></code></jst>",
+    "querySelector" : "<node expr=\"data\"/>",
+    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "responseStructure" : "jst.code"
+  },
+  {
+    "name" : "jssp",
+    "label" : "Javascript Server Page",
+    "fileExtension" : "jssp",
+    "schema" : "xtk:jssp",
+    "primaryKey" : "@namespace + ':' + @name",
+    "specificKey" : null,
+    "xmlStructure" : "<jssp xtkschema='xtk:jssp' name='${xmlName}.jssp' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></javascript>",
+    "querySelector" : "<node expr=\"data\"/>",
+    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "responseStructure" : "jssp.data"
+  },
+  {
+    "name" : "SQL",
+    "label" : "SQL Code",
+    "fileExtension" : "sql",
+    "schema" : "xtk:sql",
+    "primaryKey" : "@namespace + ':' + @name",
+    "specificKey" : null,
+    "xmlStructure" : "<sql xtkschema='xtk:sql' name='${xmlName}.sql' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></sql>",
+    "querySelector" : "<node expr=\"data\"/>",
+    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "responseStructure" : "sql.data"
+  }
+
+
+
+
+]
