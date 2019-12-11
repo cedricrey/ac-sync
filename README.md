@@ -16,12 +16,9 @@ Pour le moment : bibliothèque permettant la synchro entre des object Adobe Camp
 
 First of all, just keep in mind that this nodejs utility wasn't expected to be shared. If interested, be my guest, but :
 1) not a very good experience of project distribution and repository, so the package.json and other things are very incomplete
-2) I rewrite it all recently, so it should nbe incomplete comparing NeoSync, but very much stable. I work with Promises instead of making pyramid of doom, the code is a little more readable now.
+2) I rewrote it all recently, so it should nbe incomplete comparing NeoSync, but much more stable. I run with Promises instead of making pyramid of doom, the code is a little more readable now.
 
 ## Getting Started
-
-First copy the NeoSync Folder from 'To_User_Folder' inot your user folder (~/ in Unix like OS, c:\Users\yourname or something like that).
-Then, configure the neoSync.conf file with server url, name and password (ok, it sucks but IE password used by the Neolane Console are not readable. If you have a better idea, let me know) => new features for multi config to come
 
 ### Prerequisites
 
@@ -126,7 +123,7 @@ Same as before, but for all the file into the current folder
 ACSync -w
 ACSync -watch
 ```
-NeoSync will push a file when a change is detected.
+ACSync will push a file when a change is detected.
 You can :
 - change the directory with the '-d path/to/watch' option if you don't want watch the current directory
 - specify a pattern for the files to push with '-pattern yourpattern'. For example, if you want to push only Javascript, NeoSync -w -pattern *.js`
