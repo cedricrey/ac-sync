@@ -25,6 +25,7 @@ function ACSync( options ){
   if( this.options.connectionName )
     {
       this.accLogin = ACCLogManager.getLogin( this.options.connectionName );
+      this.connection = ACCLogManager.getConnection( this.options.connectionName, true );
       this.longinPromise = this.accLogin.getLoginPromise();
       this.longinPromise.catch( e => { console.log('Error while login : ', e.response && e.response.body ? e.response.body : "") } );
     }
@@ -245,7 +246,6 @@ else{
       }
     )
   }
-
 };
 
 ACSync.prototype._realPush = function( file ){

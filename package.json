@@ -18,13 +18,18 @@
   "license": "MIT",
   "dependencies": {
     "ac-connector": "latest",
+    "arg": "^4.1.2",
     "chokidar": "3.3.0",
-    "pretty-data": "latest",
+    "dateformat": "latest",
     "keypress": "latest",
-    "dateformat": "latest"
+    "pretty-data": "latest"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/cedricrey/ac-sync.git"
+  },
+  "bin": {
+    "ACSync": "bin/ac-sync-cli",
+    "ac-sync": "bin/ac-sync-cli"
   }
 }

@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+require('./ac-sync-cli.js')(process.argv);
+
