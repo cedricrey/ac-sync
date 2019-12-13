@@ -2,18 +2,36 @@ const fs = require('fs'),
   https = require('https'),
   http = require('http'),
   path = require('path'),
-  chokidar = require('chokidar'),
   pd = require('pretty-data').pd,
   dateformat = require('dateformat'),
-  keypress = require('keypress'),
   consoleColors = require('./utils/consoleColors'),
   ACC = require('ac-connector'),
   ACCLogManager = ACC.ACCLogManager,
   xtkQueryDef = ACC.xtkQueryDef,
   xtkSession = ACC.xtkSession;
 const fsPromises = fs.promises;
+const userFileMappingName = getUserHome() + path.sep + ".ac-connector" + path.sep + "ACSyncFileMapping.json";
 
 var fileMapping = require("./conf/fileMapping");
+
+/*User file mapping handling*/
+var userFileMapping;
+try{
+ 
+  userFileMapping =  require( userFileMappingName );
+  fileMapping.concat( userFileMapping );
+}
+catch( e )
+  {
+    //If the user file mapping JSON doesn't exist, we try to create it (empty)
+    fsPromises.writeFile( userFileMappingName , JSON.stringify([]) )
+    .catch( (e) => {
+      console.log('Error while creating user mapping file : ' + userFileMappingName);
+      console.log( e );
+    });
+  }
+
+
 function ACSync( options ){
   this.options = options || {};
   this.enableLog = false;
