@@ -61,11 +61,13 @@ test.push('MY_DELIVERY_INTERNALNAME.xml');
 
 
 ###CLI
-THE CLI IS NOT READY, BUT THIS HOW IT WILL SHORTLY WORK (like NeoSync used to)
+THE CLI IS ALMOST READY
 Main command is (will be)
 ```
-ACSync -[w,f,p,pa] options
+ACSync|ac-sync -c connectionName -[w,f,p,pa,h] options
+ACSync --[fetch,fetchCollection,push,pushall,help,watch] options
 ```
+You can also use the command ac-sync, alias of ACSync
 
 ### Fetch source
 ```
