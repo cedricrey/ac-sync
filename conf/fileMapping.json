@@ -12,6 +12,37 @@
     "responseStructure" : "<srcSchema[\\s\\S]*<\/srcSchema>"
   },
   {
+    "name" : "xtkForm",
+    "label" : "Input form",
+    "fileExtension" : "xml",
+    "schema" : "xtk:form",
+    "primaryKey" : "@namespace + ':' + @name",
+    "specificKey" : null,
+    "querySelector" : "<node expr='data'/><node expr='@xtkschema'/>",
+    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "responseStructure" : "<form[\\s\\S]*<\/form>"
+  },
+  {
+    "name" : "workflow",
+    "label" : "Workflow",
+    "fileExtension" : "xml",
+    "schema" : "xtk:workflow",
+    "primaryKey" : "@internalName",
+    "querySelector" : "<node expr=\"data\"/><node expr=\"@label\"/><node expr=\"@internalName\"/><node expr=\"@isModel\"/><node expr=\"[/]\"/><node expr=\"@showSQL\"/><node expr=\"@keepResult\"/><node expr=\"@schema\"/><node expr=\"@recipientLink\"/><node anyType=\"true\" expr=\"script\"/><node expr=\"@builtIn\"/><node expr=\"@modelName\"/><node expr=\"@form\"/><node anyType=\"true\" expr=\"variables\"/><node expr=\"'xtk:workflow'\" alias=\"@xtkschema\"/>",
+    "queryCondition" : "<condition expr=\"@internalName = '${primaryKey}'\"/>",
+    "responseStructure" : "<workflow[\\s\\S]*<\/workflow>"
+  },
+  {
+    "name" : "content",
+    "label" : "Content (MUST BE EXTENDED WITH YOU OWN CONTENT SCHEMA AND NAME IN YOUR ACSyncFileMapping.json)",
+    "fileExtension" : "xml",
+    "schema" : "ncm:content",
+    "primaryKey" : "@name",
+    "querySelector" : "<node expr=\"data\"/><node expr=\"@xtkschema\"/><node expr=\"@editForm\"/><node expr=\"@name\"/><node expr=\"@label\"/><node expr=\"[@publishing-name]\"/><node expr=\"[@publishing-namespace]\"/><node expr=\"[channel/@name]\"/>",
+    "queryCondition" : "<condition expr=\"@name = '${primaryKey}'\"/>",
+    "responseStructure" : "<content[\\s\\S]*<\/content>"
+  },
+  {
     "name" : "delivery",
     "label" : "Delivery",
     "fileExtension" : "xml",
@@ -57,6 +88,40 @@
     "querySelector" : "<node expr='[content/sms/source]'/>",
     "queryCondition" : "<condition expr=\"@internalName = '${primaryKey}'\"/>",
     "responseStructure" : "delivery.content.sms.source"
+  },
+  {
+    "name" : "includeView",
+    "label" : "Include View",
+    "fileExtension" : "xml",
+    "schema" : "nms:includeView",
+    "primaryKey" : "@name",
+    "querySelector" : "<node expr='data'/><node expr='@name'/><node expr='@label'/><node expr='[folder/@name]'/><node expr=\"'nms:includeView'\" alias='@xtkschema'/>",
+    "queryCondition" : "<condition expr=\"@name = '${primaryKey}'\"/>",
+    "responseStructure" : "<includeView[\\s\\S]*<\/includeView>"
+  },
+  {
+    "name" : "includeViewHTML",
+    "label" : "Include View HTML Source",
+    "fileExtension" : "iview.html",
+    "schema" : "nms:includeView",
+    "primaryKey" : "@name",
+    "specificKey" : "html",
+    "xmlStructure" : "<includeView xtkschema='nms:delivery' name='${internalName}' _operation='update'><source><html><![CDATA[${content}]]></html></source></includeView>",
+    "querySelector" : "<node expr='[source/html]'/>",
+    "queryCondition" : "<condition expr=\"@name = '${primaryKey}'\"/>",
+    "responseStructure" : "includeView.source.html"
+  },
+  {
+    "name" : "includeViewTxt",
+    "label" : "Include View Text Source",
+    "fileExtension" : "iview.txt",
+    "schema" : "nms:includeView",
+    "primaryKey" : "@name",
+    "specificKey" : "txt",
+    "xmlStructure" : "<includeView xtkschema='nms:delivery' name='${internalName}' _operation='update'><source><text><![CDATA[${content}]]></text></source></includeView>",
+    "querySelector" : "<node expr='[source/text]'/>",
+    "queryCondition" : "<condition expr=\"@name = '${primaryKey}'\"/>",
+    "responseStructure" : "includeView.source.text"
   },
   {
     "name" : "javascript",

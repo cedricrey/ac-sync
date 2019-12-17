@@ -1,7 +1,7 @@
 const
-  chokidar = require('chokidar'),
   keypress = require('keypress'),
   arg = require('arg'),
+  path = require('path'),
   ACSync = require('../ac-sync'),
   ccol = require('../utils/consoleColors');
 
@@ -24,14 +24,15 @@ function parseArgumentsIntoOptions(rawArgs) {
      '--directory' : String,
      '--pattern' : String,
      '--help' : Boolean,
+     '--log' : Boolean,
      '-f': '--fetch',
      '-p': '--push',
      '-pa': '--pushall',
      '-c' : '--connection',
      '-w' : '--watch',
      '-d' : '--directory',
-     '-p' : '--pattern',
-     '-h' : '--help'
+     '-h' : '--help',
+     '-l' : '--log'
      //TOOD : add enableLogs and byPassBackup options
    },
    {
@@ -48,6 +49,7 @@ function parseArgumentsIntoOptions(rawArgs) {
    directory: args['--directory'] || false,
    pattern: args['--pattern'] || false,
    help: args['--help'] || false,
+   log: args['--log'] || false,
  };
 }
 
@@ -65,9 +67,15 @@ function acSyncCli(args) {
    if( !options.connection)
     throw 'Error : connection is missing. Please use --connection|-c connection_name';
 
-    if( options.fetch || options.fetchCollection ||options.push || options.pushall || options.watch )
+
+   var directory = process.cwd();
+   if( options.directory )
+      directory = options.directory;
+
+   if( options.fetch || options.fetchCollection || options.push || options.pushall || options.watch )
     {
-      var acSync = new ACSync({connectionName : options.connection, enableLog : false, byPassBackup : false});
+      var acSync = new ACSync({connectionName : options.connection, enableLog : options.log , byPassBackup : false});
+
       if( options.fetch )
         options.fetch.split(";").forEach( f => {
           acSync.fetch( f );
@@ -79,15 +87,40 @@ function acSyncCli(args) {
         });
 
       if( options.push )
-        options.push.split(";").forEach( p => {
-          acSync.push( p );
-        });
+        {
+          console.log("pushing ", options.push);
+          options.push.split(";").forEach( p => {
+                  acSync.push( p );
+                });
+        }
       //TODO : push all, watch (with directory options to get)
+      if( options.watch )
+        {
+          var watcher = acSync.addWatcher( directory );
+          watcher.on('ready', () => { initKeypressListener( acSync, directory ) } );
+        }
     }
   }
   catch( e ){
     console.log(`${ccol.FG9}${e}${ccol.Reset}`);
   }
+}
+
+function initKeypressListener( acSync, directory ){
+  keypress(process.stdin);
+  console.log("Press Any Key Top Stop Watching")
+  process.stdin.on('keypress', function ( ch, key) {
+      //console.log('got "keypress"', key);
+      /*
+      if (key && key.ctrl && key.name == 'c') {
+        process.stdin.pause();
+      }
+      */
+      process.stdin.pause();
+      acSync.removeWatcher( directory );
+    });
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
 }
 
 module.exports = acSyncCli;

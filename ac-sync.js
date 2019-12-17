@@ -2,6 +2,7 @@ const fs = require('fs'),
   https = require('https'),
   http = require('http'),
   path = require('path'),
+  chokidar = require('chokidar'),
   pd = require('pretty-data').pd,
   dateformat = require('dateformat'),
   consoleColors = require('./utils/consoleColors'),
@@ -19,7 +20,7 @@ var userFileMapping;
 try{
  
   userFileMapping =  require( userFileMappingName );
-  fileMapping.concat( userFileMapping );
+  fileMapping = fileMapping.concat( userFileMapping );
 }
 catch( e )
   {
@@ -35,6 +36,7 @@ catch( e )
 function ACSync( options ){
   this.options = options || {};
   this.enableLog = false;
+  this.watcherByDirectory = {};
 
   if (!fs.existsSync( ACSync.backupDir )) {
     fs.mkdirSync( ACSync.backupDir )
@@ -239,6 +241,8 @@ ACSync.prototype.fetchCollection = function( fetch ){
 
 /*** Pushing part **/
 ACSync.prototype.push = function( file ){
+var currentPushResolve, currentPushReject;
+var pushPromise = new Promise( (resolve, reject ) => {currentPushResolve = resolve; currentPushReject = reject;});
 //BYPASS BACKUP STEP ?
 if( this.options.byPassBackup )
   this._realPush( file );
@@ -257,24 +261,30 @@ else{
             this.log(consoleColors.FG58 + consoleColors.BG227 + "Backup : " + filename.replace( extReg , (match,s1) =>{ return "_" + dateformat(new Date(), "dd_mm_yyyy-hhMMss") + "." + s1}) + consoleColors.Reset)
               fsPromises.rename(filename, filename.replace( extReg , (match,s1) =>{ return "_" + dateformat(new Date(), "dd_mm_yyyy-hhMMss") + "." + s1}))
                 .then( () => {                
-                  this._realPush( file );
+                  this._realPush( file )
+                    .then(
+                      ( file ) => {
+                        currentPushResolve( file );
+                      })
+                    .catch( (e) => { currentPushReject( e ) } );
                 });
             }
         );
       }
     )
   }
+  return pushPromise;
 };
 
 ACSync.prototype._realPush = function( file ){
-  var currentPushResolve, currentPushReject;
-  var pushPromise = new Promise( (resolve, reject ) => {currentPushResolve = resolve; currentPushReject = reject;});
+  var currentRealPushResolve, currentRealPushReject;
+  var realPushPromise = new Promise( (resolve, reject ) => {currentRealPushResolve = resolve; currentRealPushReject = reject;});
   var acFile = ACSync.getACSyncFile( file );
   var mapping = ACSync.fileMapByExtension[acFile.extension];
     if( !mapping )
     {
-      currentPushReject(`Can't find mapping for ${file}`);
-      return pushPromise;
+      currentRealPushReject(`Can't find mapping for ${file}`);
+      return realPushPromise;
     }
   //fs.readFile( file, (err, data) => {
     fsPromises.readFile(file)
@@ -296,17 +306,16 @@ ACSync.prototype._realPush = function( file ){
         pushSession.Write( xmlContent )
                         .then( ( result ) => {
                           this.log(`${consoleColors.BG43 + consoleColors.FG54}${acFile.internalName} pushed from ${file}${consoleColors.Reset}`);
-                          currentPushResolve(file);
+                          this.log(`${consoleColors.BG43 + consoleColors.FG54}${acFile.internalName} ${JSON.stringify(result)}${consoleColors.Reset}`);
+                          currentRealPushResolve(file);
                         } )
-                        .catch( (e) => { console.log( e ); currentPushReject( e );} );
-
-
+                        .catch( (e) => { console.log( e ); currentRealPushReject( e );} );
       }
   )
 .catch( (err) => {
   currentPushReject( err );
   });
-  return pushPromise;
+  return realPushPromise;
 }
 
 /*Return an object that reprensents the content to push*/
@@ -336,6 +345,39 @@ ACSync.getACSyncFile = function( filePath ){
     internalName : internalName //tout le nom sans l'extension (.html, .txt etc.)
   };
 };
+
+
+ACSync.prototype.addWatcher = function( directory, options ){
+  directory = directory.replace(/\\/g,'/');
+  depth = 0;
+  if( options && options.subDir )
+    depth = null;
+  if( !this.watcherByDirectory[ directory ] )
+  {
+    var watcher = chokidar.watch( directory, { depth: depth, persistent: true} );
+    watcher.on('error', error => console.log(`Watcher error: ${error}`));
+    watcher.on('change', (path, event) => {
+      console.log('Modification detected, send content : ' + path);
+      this.push( path ).catch( (e) => { this.log( e ) ;});
+    });
+    watcher.on('ready', () => {
+      watcher.on('add', (path, event) => {
+        //console.log(event, path);
+        console.log('New file detected : ' + path);
+        this.push( path ).catch( (e) => { this.log( e ) ;});
+      });
+    })
+    this.watcherByDirectory[ directory ] = watcher;
+    return watcher;
+  }
+}
+ACSync.prototype.removeWatcher = function( directory ){
+  directory = directory.replace(/\\/g,'/');
+  if( this.watcherByDirectory[ directory ] )
+  {
+    this.watcherByDirectory[ directory ].close();
+  }
+}
 
 function getUserHome() {
   return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
