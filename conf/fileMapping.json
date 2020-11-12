@@ -1,5 +1,5 @@
 [
-  
+
   {
     "name" : "srcSchema",
     "label" : "Schema source",
@@ -127,12 +127,13 @@
     "name" : "javascript",
     "label" : "Javascript Code",
     "fileExtension" : "js",
+    "forceExtension" : true,
     "schema" : "xtk:javascript",
     "primaryKey" : "@namespace + ':' + @name",
     "specificKey" : null,
-    "xmlStructure" : "<javascript xtkschema='xtk:javascript' name='${xmlName}.js' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></javascript>",
+    "xmlStructure" : "<javascript xtkschema='xtk:javascript' name='${xmlName}' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></javascript>",
     "querySelector" : "<node expr=\"data\"/>",
-    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "queryCondition" : "<condition expr=\"@namespace = '${nameSpace}' AND @name = '${name}'\"/>",
     "responseStructure" : "javascript.data"
   },
   {
@@ -151,24 +152,26 @@
     "name" : "jssp",
     "label" : "Javascript Server Page",
     "fileExtension" : "jssp",
+    "forceExtension" : true,
     "schema" : "xtk:jssp",
     "primaryKey" : "@namespace + ':' + @name",
     "specificKey" : null,
-    "xmlStructure" : "<jssp xtkschema='xtk:jssp' name='${xmlName}.jssp' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></javascript>",
+    "xmlStructure" : "<jssp xtkschema='xtk:jssp' name='${xmlName}' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></javascript>",
     "querySelector" : "<node expr=\"data\"/>",
-    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "queryCondition" : "<condition expr=\"@namespace = '${nameSpace}' AND @name = '${name}'\"/>",
     "responseStructure" : "jssp.data"
   },
   {
     "name" : "SQL",
     "label" : "SQL Code",
     "fileExtension" : "sql",
+    "forceExtension" : true,
     "schema" : "xtk:sql",
     "primaryKey" : "@namespace + ':' + @name",
     "specificKey" : null,
-    "xmlStructure" : "<sql xtkschema='xtk:sql' name='${xmlName}.sql' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></sql>",
+    "xmlStructure" : "<sql xtkschema='xtk:sql' name='${xmlName}' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></sql>",
     "querySelector" : "<node expr=\"data\"/>",
-    "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>",
+    "queryCondition" : "<condition expr=\"@namespace = '${nameSpace}' AND @name = '${name}'\"/>",
     "responseStructure" : "sql.data"
   }
 

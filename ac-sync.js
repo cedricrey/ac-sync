@@ -90,6 +90,11 @@ ACSync.getACFetch = function( fetchString ){
   var specificKeyReg = "([^\\[]*)\\[([^\\]]*)\\]$";
   var specificKey = "";
   var noDirFetchString = fetchString;
+  //NS:NAME management
+  var primaryName = "";
+  var primaryNS = "";
+  var primaryNSReg = "([^:]*):(.*)";
+
   if( fetchString.match(fetchNameReg) && fetchString.match(fetchNameReg).length > 1 )
     fetchRequest = fetchString.match(fetchNameReg)[1];
   else
@@ -112,6 +117,13 @@ ACSync.getACFetch = function( fetchString ){
           fetchName += `[${specificKey}]`
         }
     }
+    primaryName = primaryKey;
+    if( primaryKey.match(primaryNSReg) && primaryKey.match(primaryNSReg).length > 2 )
+      {
+        primaryName = primaryKey.match(primaryNSReg)[2];
+        primaryNS = primaryKey.match(primaryNSReg)[1];
+      }
+
   return {
     fetchRequest : fetchRequest,
     fetchName : fetchName,
@@ -119,7 +131,9 @@ ACSync.getACFetch = function( fetchString ){
     primaryKey : primaryKey,
     specificKey : specificKey,
     directory:fetchDir,
-    fileName : primaryKey.replace(/:/,'_')
+    fileName : primaryKey.replace(/:/,'_'),
+    primaryName,
+    primaryNS
   };
 
 };
@@ -168,7 +182,9 @@ ACSync.prototype.fetch = function( fetch ){
     }
   var fetchQueryDef = new xtkQueryDef({ accLogin : this.accLogin, outputFormat : mapping.isXML ? 'raw' : null });
   var querySelector = mapping.querySelector;
-  var queryCondition = mapping.queryCondition.replace(/\$\{primaryKey\}/gi, acFetch.primaryKey);
+  var queryCondition = mapping.queryCondition.replace(/\$\{primaryKey\}/gi, acFetch.primaryKey)
+                       .replace(/\$\{name\}/gi, acFetch.primaryName)
+                       .replace(/\$\{nameSpace\}/gi, acFetch.primaryNS);
   var query = `
   <queryDef startPath="/" schema="${mapping.schema}" operation="get">
     <select>
@@ -249,7 +265,7 @@ if( this.options.byPassBackup )
   this._realPush( file );
 
 else{
-//BACKUP BEFORE PUSHING  
+//BACKUP BEFORE PUSHING
   var backupFecthStringPromise = ACSync.getFecthStringFromFile( file );
   backupFecthStringPromise.then(
     fecthString => {
@@ -347,12 +363,28 @@ ACSync.getACSyncFile = function( filePath ){
   var nameLength = fileName.length - fileExtension.length - namePos - 1;
   var xmlName = fileName.substr( namePos , nameLength );
   var nameSpace = fileName.substr(0, fileName.indexOf("_") );
+  //forceExtension management
+  //For object like xtk:sql, xtk:javascript, the fileMapping define a "forceExtension", because Campaign conventionally use the extension in the name
+  // SQL Object usually name .sql, javascript .js etc.
+  var mapping = ACSync.fileMapByExtension[fileExtension];
+  if( mapping.forceExtension )
+  {
+    if( ! internalName.match( '.' + mapping.fileExtension + '$'))
+    {
+      internalName += `.${mapping.fileExtension}`;
+    }
+    if( ! xmlName.match( '.' + mapping.fileExtension + '$'))
+    {
+      xmlName += `.${mapping.fileExtension}`;
+    }
+  }
+
   return {
     extension : fileExtension,
     fileName : fileName,
     xmlName : xmlName,
     nameSpace : nameSpace,
-    internalName : internalName //tout le nom sans l'extension (.html, .txt etc.)
+    internalName : internalName //tout le nom sans l'extension (.html, .txt etc.), sauf si forceExtension est définit dans le mapping
   };
 };
 
