@@ -78,19 +78,22 @@ function acSyncCli(args) {
 
       if( options.fetch )
         options.fetch.split(";").forEach( f => {
-          acSync.fetch( f );
+          acSync.fetch( f )
+          .catch( e => { console.log(`${ccol.FG9}${e}${ccol.Reset}`); });
         });
 
       if( options.fetchCollection )
         options.fetchCollection.split(";").forEach( f => {
-          acSync.fetchCollection( f );
+          acSync.fetchCollection( f )
+          .catch( e => { console.log(`${ccol.FG9}${e}${ccol.Reset}`); });
         });
 
       if( options.push )
         {
           console.log("pushing ", options.push);
           options.push.split(";").forEach( p => {
-                  acSync.push( p );
+                  acSync.push( p )
+                  .catch( e => { console.log(`${ccol.FG9}${e}${ccol.Reset}`); });
                 });
         }
       //TODO : push all, watch (with directory options to get)

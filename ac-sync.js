@@ -18,7 +18,7 @@ var fileMapping = require("./conf/fileMapping");
 /*User file mapping handling*/
 var userFileMapping;
 try{
- 
+
   userFileMapping =  require( userFileMappingName );
   fileMapping = fileMapping.concat( userFileMapping );
 }
@@ -196,15 +196,16 @@ ACSync.prototype.fetch = function( fetch ){
             var fullFileName = (acFetch.directory != "" ? (acFetch.directory + path.sep) : "" )+ acFetch.fileName;
             fullFileName += ( ! fullFileName.match( mapping.fileExtension + "$" ) ) ? "." + mapping.fileExtension : "";
             this.log(`${consoleColors.BgGreen + consoleColors.white}Got ${acFetch.primaryKey} content, Writing ${fullFileName}${consoleColors.Reset}`);
-            fs.writeFile(fullFileName, 
-                      resultContent, 
-                      (result, error ) => { 
-                        if(error) 
+            fs.writeFile(fullFileName,
+                      resultContent,
+                      (result, error ) => {
+                        if(error)
                           currentFetchReject( error );
                         else
                           currentFetchResolve( fullFileName , resultContent);
                       });
-            });
+            })
+            .catch( e => { console.log(`${consoleColors.FG9}${e}${consoleColors.Reset}`); });
           }
     ).catch( (e) => { console.log( e )} );
 
@@ -260,7 +261,7 @@ else{
             var extReg = new RegExp("\\.([^\\" + path.sep + "]*$)");
             this.log(consoleColors.FG58 + consoleColors.BG227 + "Backup : " + filename.replace( extReg , (match,s1) =>{ return "_" + dateformat(new Date(), "dd_mm_yyyy-hhMMss") + "." + s1}) + consoleColors.Reset)
               fsPromises.rename(filename, filename.replace( extReg , (match,s1) =>{ return "_" + dateformat(new Date(), "dd_mm_yyyy-hhMMss") + "." + s1}))
-                .then( () => {                
+                .then( () => {
                   this._realPush( file )
                     .then(
                       ( file ) => {
@@ -269,7 +270,16 @@ else{
                     .catch( (e) => { currentPushReject( e ) } );
                 });
             }
-        );
+        )
+        .catch( (e) => {
+          console.log(consoleColors.FG58 + consoleColors.BG227 + "Backup Failed : " +  e + consoleColors.Reset);
+          this._realPush( file )
+            .then(
+              ( file ) => {
+                currentPushResolve( file );
+              })
+            .catch( (e) => { currentPushReject( e ) } );
+        });
       }
     )
   }
