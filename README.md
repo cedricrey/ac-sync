@@ -42,7 +42,7 @@ Then, be sure to have run the configuration of [ac-connector](https://www.npmjs.
     ACCManager
 
 ## Use
-###ACSync class
+### ACSync class
 See (and try) example.js script
 ```
 var ACSync = require('ac-sync');
@@ -61,7 +61,7 @@ test.push('MY_DELIVERY_INTERNALNAME.xml');
 ```
 
 
-###CLI
+### CLI
 Main command is :
 ```
 ACSync|ac-sync -c connectionName -[w,f,p,pa,h] options
@@ -121,7 +121,8 @@ This command will push the HTML source of the delivery with 'TOTO' as internal n
 ~~Attention please : if the parameter 'devMode' is set to 0 or undefined in the neoSync.conf of the user, only HTML and Text version of deliveries and includes views can be pushed to the server.
 Other source will be ignored. This is a security if non developpers want to work with NeoSync (HTML integration, Marketing people etc.).
 Also, if a push is done, NeoSync will make a backup of the current server source before pushing. The backup is in the "NeoSync/BACKUP" folder into the user folder (next to neoSync.conf)~~
-if a push is done, ACSync will make a backup of the current server source before pushing. The backup is in the "~/.ac-connector/ACSyncBackup/BACKUP" folder into the user folder (next to ACSyncFileMapping.json)
+
+If a push is done, ACSync will make a backup of the current server source before pushing. The backup is in the "~/.ac-connector/ACSyncBackup/BACKUP" folder into the user folder (next to ACSyncFileMapping.json)
 
 ### Push all source to the server *(not yet implemented)*
 ```
