@@ -65,14 +65,15 @@ test.push('MY_DELIVERY_INTERNALNAME.xml');
 Main command is :
 ```
 ACSync|ac-sync -c connectionName -[w,f,p,pa,h] options
-ACSync --[fetch,fetchCollection,push,pushall,help,watch] options
+#OR
+ACSync -c connectionName --[fetch,fetchCollection,push,pushall,help,watch] options
 ```
 You can also use the command ac-sync, alias of ACSync
 
-### Fetch source
+### Fetch source :arrow_lower_left:
 ```
-ACSync -f namespace:schema=logicKey[;namespace:schema=logicKey]
-ACSync --fetch namespace:schema=logicKey[;namespace:schema=logicKey]
+ACSync -c connectionName -f namespace:schema=logicKey[;namespace:schema=logicKey]
+ACSync -c connectionName --fetch namespace:schema=logicKey[;namespace:schema=logicKey]
 *new* ACSync --fetchCollection namespace:schema=logicKey[,logicKey]
 ```
 
@@ -80,8 +81,8 @@ ACSync --fetch namespace:schema=logicKey[;namespace:schema=logicKey]
 
 Getting the deliveries with internalName 'TOTO' and 'TATA' :
 ```
-ACSync -f nms:delivery=TOTO;nms:delivery=TATA
-ACSync --fetchCollection nms:delivery=TOTO,TATA
+ACSync -c connectionName -f nms:delivery=TOTO;nms:delivery=TATA
+ACSync -c connectionName --fetchCollection nms:delivery=TOTO,TATA
 ```
 Those similar commands will create the TOTO.xml and TATA.xml files on the current local directory
 
@@ -105,16 +106,16 @@ Avaiblale default fetch :
 
 This is set in the mapping and can be changed (or best, can be extended/overwritten in the ACSyncFileMapping.json file, see below for more informations)
 
-### Push source to the server
+### Push source to the server :arrow_upper_right:
 ```
-ACSync -p localfilename
-ACSync --push localfilename
+ACSync -c connectionName -p localfilename
+ACSync -c connectionName --push localfilename
 ```
 NeoSync wil recognize what to do with :
  - the extension of the file
  - the content of the file in case of XML file
 ```
-ACSync -p TOTO.html
+ACSync -c connectionName -p TOTO.html
 ```
 This command will push the HTML source of the delivery with 'TOTO' as internal name.
 
@@ -124,17 +125,17 @@ Also, if a push is done, NeoSync will make a backup of the current server source
 
 If a push is done, ACSync will make a backup of the current server source before pushing. The backup is in the "~/.ac-connector/ACSyncBackup/BACKUP" folder into the user folder (next to ACSyncFileMapping.json)
 
-### Push all source to the server *(not yet implemented)*
+### Push all source to the server :arrow_upper_right:
 ```
-ACSync -pa
-ACSync --pushall
+ACSync -c connectionName -pa
+ACSync -c connectionName --pushall
 ```
 Same as before, but for all the file into the current folder
 
-### Watch the current folder and push when change detected *(not yet implemented)*
+### Watch the current folder and push when change detected :eyes:
 ```
-ACSync -w
-ACSync --watch
+ACSync -c connectionName -w
+ACSync -c connectionName --watch
 ```
 ACSync will push a file when a change is detected.
 You can :
