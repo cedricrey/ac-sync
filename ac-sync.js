@@ -169,7 +169,7 @@ ACSync.getFecthStringFromFile = function( fileName ){
 
 //the fetch argument must be a string respenting the 'fetch' command : shcema=primaryKey. Ex : nms:delivery=DM00001, xtk:srcSchema=nms:recipient
 //the fecthes definition must be declared on the Mapping File (conf/fileMapping.json)
-ACSync.prototype.fetch = function( fetch ){
+ACSync.prototype.fetch = function( fetch , options ){
   var currentFetchResolve, currentFetchReject;
   var fetchPromise = new Promise( (resolve, reject ) => {currentFetchResolve = resolve; currentFetchReject = reject;});
   var acFetch = ACSync.getACFetch( fetch );
@@ -182,6 +182,8 @@ ACSync.prototype.fetch = function( fetch ){
     }
   var fetchQueryDef = new xtkQueryDef({ accLogin : this.accLogin, outputFormat : mapping.isXML ? 'raw' : null });
   var querySelector = mapping.querySelector;
+  if( options && options.extraQuerySelector )
+    querySelector += options.extraQuerySelector;
   var queryCondition = mapping.queryCondition.replace(/\$\{primaryKey\}/gi, acFetch.primaryKey)
                        .replace(/\$\{name\}/gi, acFetch.primaryName)
                        .replace(/\$\{nameSpace\}/gi, acFetch.primaryNS);
@@ -208,6 +210,16 @@ ACSync.prototype.fetch = function( fetch ){
 
             if(!resultContent)
               currentFetchReject( `Error while searching ${acFetch.fetchRequest} : not found` );
+            if( mapping.contentFilter )
+              {
+                this.log(`mapping.contentFilter.constructor = ${mapping.contentFilter.constructor}`);
+                if( mapping.contentFilter.constructor != Array )
+                  mapping.contentFilter = [mapping.contentFilter];
+                mapping.contentFilter.forEach( filter => {
+                  this.log(`filter !!! ${filter}`);
+                  resultContent = resultContent.replace( new RegExp(filter,"gm"), "" );
+                });
+              }
 
             var fullFileName = (acFetch.directory != "" ? (acFetch.directory + path.sep) : "" )+ acFetch.fileName;
             fullFileName += ( ! fullFileName.match( mapping.fileExtension + "$" ) ) ? "." + mapping.fileExtension : "";

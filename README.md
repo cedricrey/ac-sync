@@ -165,11 +165,11 @@ The mapping is an array of JSON object :
     "querySelector" : "<node expr='data'/><node expr='@xtkschema'/>", => what you want to get in your file (if other than XML file, just take 1 element, for example : /content/source/html of nms:delivery, or /data of xtk:javascript)
     "queryCondition" : "<condition expr=\"@namespace + ':' + @name = '${primaryKey}'\"/>", => The query condition that match a unic element for you schema. You can (must) use the variable ${primaryKey}, ${nameSpace} or/and ${name}
     "responseStructure" : "jst.code"|"<delivery[\\s\\S]*<\/delivery>", => How to retrieve the content from the server to local file in a soap response of queryDef.Execute : for non-XML file, a JS path to get the file content. For XML file, a regular expression that represents what you want to keep in your local XML file (usualy "<schema[\\s\\S]*<\/schema>")
+    "contentFilter" : "regexp or array of regexp" => If provide, a String or an Array of String to filter the result of a fetch to delete some content (for example, in the xtk:workflow mapping, we have to get the "data" to fetch all the content, but in case of a running instance (@isModel = 0), we don't want the errorCount, taskCount, eventCount attributes, so we exclude this content from the result)
 
     //Push part (send content to Adobe Campaign)
     "xmlStructure" : "<delivery xtkschema='nms:delivery' internalName='${internalName}' _operation='update'><content><text><source><![CDATA[${content}]]></source></text></content></delivery>" => For non-XML mapping, that represent how to push the file content in a soap request of xtk:session.Write(). Available variable : ${nameSpace}, ${xmlName} (if your primary key has 2 keys and a ":" to join them, ${nameSpace} is the first part, ${xmlName} is the second part), ${internalName} ( = unique primary key ), ${content} (content of your local file)
 
-    "responseStructure" : "<srcSchema[\\s\\S]*<\/srcSchema>"
     },
 
 The better you can do is to take a look at the "conf/fileMapping.json" file.

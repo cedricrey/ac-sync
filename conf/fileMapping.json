@@ -30,7 +30,12 @@
     "primaryKey" : "@internalName",
     "querySelector" : "<node expr=\"data\"/><node expr=\"@label\"/><node expr=\"@internalName\"/><node expr=\"@isModel\"/><node expr=\"[/]\"/><node expr=\"@showSQL\"/><node expr=\"@keepResult\"/><node expr=\"@schema\"/><node expr=\"@recipientLink\"/><node anyType=\"true\" expr=\"script\"/><node expr=\"@builtIn\"/><node expr=\"@modelName\"/><node expr=\"@form\"/><node anyType=\"true\" expr=\"variables\"/><node expr=\"'xtk:workflow'\" alias=\"@xtkschema\"/>",
     "queryCondition" : "<condition expr=\"@internalName = '${primaryKey}'\"/>",
-    "responseStructure" : "<workflow[\\s\\S]*<\/workflow>"
+    "responseStructure" : "<workflow[\\s\\S]*<\/workflow>",
+    "contentFilter" : [
+      "eventCount=\"[^\"]*\"",
+      "taskCount=\"[^\"]*\"",
+      "errorCount=\"[^\"]*\""
+    ]
   },
   {
     "name" : "content",
@@ -173,7 +178,18 @@
     "querySelector" : "<node expr=\"data\"/>",
     "queryCondition" : "<condition expr=\"@namespace = '${nameSpace}' AND @name = '${name}'\"/>",
     "responseStructure" : "sql.data"
-  }
+  },
+  {
+    "name" : "WebApp",
+    "label" : "Web application",
+    "fileExtension" : "xml",
+    "schema" : "nms:webApp",
+    "primaryKey" : "@internalName",
+    "querySelector" : "<node expr=\"@label\"/> <node expr=\"@internalName\"/> <node expr=\"@appState\"/> <node expr=\"@nature\"/> <node expr=\"@lastModified\"/> <node expr=\"@created\"/> <node expr=\"@endDate\"/> <node expr=\"@idCounter\"/> <node expr=\"data\"/> <node expr=\"@builtIn\"/> <node expr=\"@isModel\"/> <node expr=\"@optOutBannerMode\"/> <node expr=\"@library\"/> <node expr=\"@defaultLanguage\"/> <node expr=\"@designLanguage\"/> <node expr=\"@timezone\"/> <node expr=\"@state\"/> <node expr=\"@startDate\"/> <node expr=\"desc\"/> <node expr=\"@publicationDate\"/> <node expr=\"@accessControl\"/> <node expr=\"@hasHtmlPage\"/> <node expr=\"@translationStatus\"/> <node expr=\"@appType\"/> <node expr=\"[rendering/@internalName]\"/> <node expr=\"[operation/@internalName]\"/> <node expr=\"[deliveryMapping/@name]\"/> <node expr=\"[folderProcess/@name]\"/> <node expr=\"[folderProcess/@fullName]\"/> <node expr=\"[folder/@name]\"/> <node expr=\"[folder/@fullName]\"/> <node expr=\"[defaultDictionary/@name]\"/> <node expr=\"[defaultDictionary/@fullName]\"/> <node expr=\"[cmsAccount/@name]\"/> <node expr=\"[defaultOrigin/@internalName]\"/>",
+    "queryCondition" : "<condition expr=\"@internalName = '${primaryKey}'\"/>",
+    "responseStructure" : "<webApp[\\s\\S]*<\/webApp>"
+   }
+
 
 
 
