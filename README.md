@@ -155,7 +155,7 @@ The mapping is an array of JSON object :
     "label" : "Label", => a gracefull label
     "fileExtension" : "xml|js|whatyouwant", => the extension of the wrote local file. If XML, the file will be the image of the XML returned by a queryDef
     "schema" : "xtk:srcSchema", => the Adobe Campaign Schema name of your mapped object
-    "forceExtension" : true, => not mandatory, but if you want that your object names with the extension by default on the server (like the Javascript : ns_myScript.js will be ns:myScript**.js** on the server instead of ns:myScript), set this parameter to 'true'
+    "forceExtension" : true, => not mandatory, but if you want that your object names with the extension by default on the server (like the Javascript : ns_myScript.js will be ns:myScript.js on the server instead of ns:myScript), set this parameter to 'true'
     "primaryKey" : "@internalName|@namespace + ':' + @name|@name|@whatyouwant", => The primary key of your mapped obejct. If this is a multiple key, just string and concat them
     "specificKey" : null|"html"|"sms"|"whatyouwant", => For specific mapping, witch represent link between a part of the object and specific local file type (example : I set .html file for the html source of a delivery). This must be added in with bracket on a fetch => nms:delivery=DM12563[html]. If not present, ignored
 
