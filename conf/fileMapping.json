@@ -161,7 +161,7 @@
     "schema" : "xtk:jssp",
     "primaryKey" : "@namespace + ':' + @name",
     "specificKey" : null,
-    "xmlStructure" : "<jssp xtkschema='xtk:jssp' name='${xmlName}' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></javascript>",
+    "xmlStructure" : "<jssp xtkschema='xtk:jssp' name='${xmlName}' namespace='${nameSpace}'><data><![CDATA[${content}]]></data></jssp>",
     "querySelector" : "<node expr=\"data\"/>",
     "queryCondition" : "<condition expr=\"@namespace = '${nameSpace}' AND @name = '${name}'\"/>",
     "responseStructure" : "jssp.data"
