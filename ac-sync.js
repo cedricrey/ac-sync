@@ -329,14 +329,17 @@ ACSync.prototype._realPush = function( file ){
     .then( ( data ) => {
         //console.log( data.toString() );
         var xmlContent;
+        //BUG : all $ must be double to avoid unespected replacement (like $', $&, $1)
+        var dataStr = data.toString().replace(/\$/gm,'$$$');
         if(acFile.extension.toLowerCase() != "xml")
-          xmlContent = mapping.xmlStructure.replace(/\$\{internalName\}/g, acFile.internalName)
+          {
+            xmlContent = mapping.xmlStructure.replace(/\$\{internalName\}/g, acFile.internalName)
                                              .replace(/\$\{xmlName\}/g, acFile.xmlName)
                                              .replace(/\$\{nameSpace\}/g, acFile.nameSpace)
-                                             .replace(/\$\{content\}/g, data.toString());
+                                             .replace(/\$\{content\}/m, dataStr);
+          }
         else
-          xmlContent = data.toString();
-
+          xmlContent = data.toString();      
       this.log(`${consoleColors.BgWhite + consoleColors.FgBlack + consoleColors.FG43 + consoleColors.BG54}Push ${mapping.label}  '${acFile.internalName}' from ${file} ${consoleColors.Reset}`);
       this.log(`${consoleColors.BgWhite + consoleColors.FgBlack + consoleColors.FG43 + consoleColors.BG54}${xmlContent} ${consoleColors.Reset}`);
 
@@ -347,7 +350,7 @@ ACSync.prototype._realPush = function( file ){
                           this.log(`${consoleColors.BG43 + consoleColors.FG54}${acFile.internalName} ${JSON.stringify(result)}${consoleColors.Reset}`);
                           currentRealPushResolve(file);
                         } )
-                        .catch( (e) => { console.log( e ); currentRealPushReject( e );} );
+                        .catch( (e) => { /*console.log( e ); */currentRealPushReject( e );} );
       }
   )
 .catch( (err) => {
