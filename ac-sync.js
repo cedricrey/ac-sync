@@ -44,10 +44,14 @@ function ACSync( options ){
 
   if( this.options.connectionName )
     {
-      this.accLogin = ACCLogManager.getLogin( this.options.connectionName );
       this.connection = ACCLogManager.getConnection( this.options.connectionName, true );
-      this.longinPromise = this.accLogin.getLoginPromise();
-      this.longinPromise.catch( e => { console.log('Error while login : ', e.response && e.response.body ? e.response.body : "") } );
+      // getLogin is now async (keytar secret retrieval) — longinPromise resolves once the login is ready
+      this.longinPromise = ACCLogManager.getLogin( this.options.connectionName )
+        .then( login => {
+          this.accLogin = login;
+          return login.getLoginPromise();
+        })
+        .catch( e => { console.log('Error while login : ', e.response && e.response.body ? e.response.body : e) });
     }
   if( this.options.enableLog )
     this.enableLog = options.enableLog;
@@ -180,7 +184,6 @@ ACSync.prototype.fetch = function( fetch , options ){
       currentFetchReject(`Can't find mapping for ${fetch}`);
       return fetchPromise;
     }
-  var fetchQueryDef = new xtkQueryDef({ accLogin : this.accLogin, outputFormat : mapping.isXML ? 'raw' : null });
   var querySelector = mapping.querySelector;
   if( options && options.extraQuerySelector )
     querySelector += options.extraQuerySelector;
@@ -200,6 +203,8 @@ ACSync.prototype.fetch = function( fetch , options ){
   this.log(` Query def : ${consoleColors.BgWhite + consoleColors.FgBlack}${query} ${consoleColors.Reset}`);
   //Execute Fetch only when login done (need login token etc.)
    this.longinPromise.then( ( connection ) => {
+        // accLogin is guaranteed to be set once longinPromise resolves
+        var fetchQueryDef = new xtkQueryDef({ accLogin : this.accLogin, outputFormat : mapping.isXML ? 'raw' : null });
         fetchQueryDef.ExecuteQuery( query ).then((result) => {
             var responseStructure = mapping.responseStructure;
             var resultContent;
