@@ -1,7 +1,7 @@
 {
   "author": "Cédric Rey",
   "name": "ac-sync",
-  "version": "2.1.6",
+  "version": "2.2.1",
   "description": "Adobe Campaign Classic Synchronisation : tools to synchronise Adobe Campaign Classic objects to local files. NeoSync v2.0",
   "main": "ac-sync.js",
   "keywords": [
