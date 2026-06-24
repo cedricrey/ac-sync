@@ -30,6 +30,7 @@
   },
   "bin": {
     "ACSync": "bin/ac-sync-cli",
-    "ac-sync": "bin/ac-sync-cli"
+    "ac-sync": "bin/ac-sync-cli",
+    "ACCManager": "node_modules/ac-connector/startUI.js"
   }
 }
